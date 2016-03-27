@@ -109,10 +109,10 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            Toast.makeText(context, "File Uploaded Sucesfully!",
+            Toast.makeText(context, "File downloaded Sucesfully!",
                     Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(context, "Failed to upload file", Toast.LENGTH_LONG)
+            Toast.makeText(context, "Failed to download file", Toast.LENGTH_LONG)
                     .show();
         }
     }
