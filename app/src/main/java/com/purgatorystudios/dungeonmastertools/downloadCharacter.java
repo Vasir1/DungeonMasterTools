@@ -2,6 +2,7 @@ package com.purgatorystudios.dungeonmastertools;
 
 import org.w3c.dom.Element;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,7 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class downloadFile extends AsyncTask<Void, Void, Boolean> {
+public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
 
     private DropboxAPI<?> dropbox;
     private String path;
@@ -45,13 +46,17 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
     private Context context;
 
     private String characterName;
+    Element name, alignment, city, faction, notes;
+    viewCharacter passed_viewcharacter;
+    public String rev;
 
-    public downloadFile(Context context, DropboxAPI<?> dropbox,
-                               String path, String _filename) {
+    public downloadCharacter(Context context,viewCharacter _viewCharacter, DropboxAPI<?> dropbox,
+                        String path, String _filename) {
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
         this.filemame=_filename;
+        this.passed_viewcharacter=_viewCharacter;
         Log.w("test","to download: "+path+" - "+_filename);
     }
 
@@ -72,6 +77,7 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
             FileOutputStream outputStream = new FileOutputStream(file);
             DropboxAPI.DropboxFileInfo info = dropbox.getFile(path+filemame, null, outputStream, null);
             Log.i("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+            rev=info.getMetadata().rev;
 
             String received=read(file);
             Log.w("test",received);
@@ -126,6 +132,8 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
+            passed_viewcharacter.initialize(name.getTextContent(),alignment.getTextContent(),city.getTextContent(),faction.getTextContent(),
+                    notes.getTextContent(),rev);
             Toast.makeText(context, "File downloaded Sucesfully!",
                     Toast.LENGTH_LONG).show();
         } else {
@@ -146,13 +154,13 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
             dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(fname);
             doc.getDocumentElement().normalize();
-           // DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            // DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             //DocumentBuilder db = dbf.newDocumentBuilder();
-             //doc = db.parse(fname);
+            //doc = db.parse(fname);
 
             //doc.getDocumentElement().normalize();
             //doc = parseXML(fname);
-           // doc = parseXML("/home/abc/Test.xml");
+            // doc = parseXML("/home/abc/Test.xml");
         }
         catch (ParserConfigurationException e)
         {
@@ -167,92 +175,38 @@ public class downloadFile extends AsyncTask<Void, Void, Boolean> {
         catch (IOException e)
         {
             Log.w("test",e.toString());
-           // e.printStackTrace();
+            // e.printStackTrace();
         }
 
         if(doc != null)
         {
             NodeList nList = doc.getElementsByTagName("character");
             //NodeList nList = doc.getElementsByTagName("character");
-           // Node name= doc.getElementById("name");
+            // Node name= doc.getElementById("name");
 
 
             for (int i = 0; i < nList.getLength(); i++)
             {
                 Node nNode = nList.item(i);
                 Element eElement = (Element) nNode;
-                Element cElement =  (Element) eElement.getElementsByTagName("alignment").item(0);
-                Element name =  (Element) eElement.getElementsByTagName("name").item(0);
-               // Element cElement =  (Element) eElement.getElementsByTagName("alignment").item(0);
-                //Log.w("test","Manager ID : " + cElement.getAttribute("person"));
-               // Log.w("test","Manager ID : " + eElement.getNodeValue()); //null
-                //Log.w("test","Manager ID : " + eElement.toString()); //useless
-                Log.w("test","Manager ID : " + eElement.getTextContent()); // Chaotic Good
-               // Log.w("test","Manager ID : " + eElement.getNodeName()); // aignment
-                Log.w("test","Child count?: " + eElement.hasChildNodes());
-                //Log.w("test","Child count?: " + eElement.getChildNodes().item(0).getNodeName());
-                Log.w("test","name should be: "+name.getTextContent());
-                Log.w("test","alignment should be: "+cElement.getTextContent());
-                //name.setTextContent(name.getTextContent());
-                characterName=name.getTextContent();
+                Element cElement =  (Element) eElement.getElementsByTagName("Alignment").item(0);
+                 name =  (Element) eElement.getElementsByTagName("Name").item(0);
+                alignment =  (Element) eElement.getElementsByTagName("Alignment").item(0);
+                 city =  (Element) eElement.getElementsByTagName("City").item(0);
+                 faction =  (Element) eElement.getElementsByTagName("Faction").item(0);
+                 notes =  (Element) eElement.getElementsByTagName("Notes").item(0);
 
-                Log.w("test", "name should be: " + name.getTextContent());
+               // characterName=name.getTextContent();
 
-                XmlSerializer xmlSerializer = Xml.newSerializer();
-                StringWriter writer = new StringWriter();
-                try {
-                    xmlSerializer.setOutput(writer);
-                    //start Document
-                    xmlSerializer.startDocument("UTF-8", true);
-                    //open tag <items>
-                    xmlSerializer.text("\n");
-                    xmlSerializer.startTag("", "character");
-                    xmlSerializer.text("\n");
-                    xmlSerializer.startTag("", "name");
-                   // xmlSerializer.text("\n");
-                    //xmlSerializer.attribute("", "name", characterName);
-                    xmlSerializer.text(characterName);
-                    //xmlSerializer.text("\n");
 
-                    xmlSerializer.endTag("", "name");
-                    xmlSerializer.text("\n");
-                    xmlSerializer.startTag("", "alignment");
-                    //xmlSerializer.text("\n");
-                    xmlSerializer.text("Chaotic Evil");
-                   // xmlSerializer.text("\n");
-                   // xmlSerializer.attribute("", "alignment", "Chaotic Evil");
-
-                    xmlSerializer.endTag("", "alignment");
-                    xmlSerializer.text("\n");
-
-                    xmlSerializer.endTag("", "character");
-                    xmlSerializer.endDocument();
-
-                    final File tempDir = context.getCacheDir();
-                    //FileOutputStream myFile=openFileOutput(f);
-                    writer.toString();
-                    File file = File.createTempFile("file", ".txt", tempDir);
-                    //file.write(writer.toString().getBytes());
-                   // file=writer.toString();
-                   // file
-                    /*
-                    UploadFileToDropbox upload = new UploadFileToDropbox(context, dropbox,
-                            "/DropboxSample/", writer.toString(), characterName);
-                    upload.execute();*/
 
                 }
-                catch (FileNotFoundException e) {
-                    System.err.println("FileNotFoundException: " + e.getMessage());
-                   // throw new SAXException(e);
 
-                } catch (IOException e) {
-                    System.err.println("Caught IOException: " + e.getMessage());
-                }
 
 
 
             }
-        }
+
     }
 
     private Document parseXML(String filePath) throws ParserConfigurationException, SAXException, IOException

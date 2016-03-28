@@ -42,7 +42,26 @@
             android:label="@string/title_activity_upload_file_to_dropbox"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ListDropboxFiles" />
-        <activity android:name=".downloadFile"></activity>
+        <activity android:name=".downloadFile" />
+        <activity
+            android:name=".newCharacter"
+            android:label="@string/title_activity_new_character"
+            android:parentActivityName=".DropboxActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.purgatorystudios.dungeonmastertools.DropboxActivity" />
+        </activity>
+        <activity
+            android:name=".viewCharacter"
+            android:label="@string/title_activity_view_character"
+            android:parentActivityName=".DropboxActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.purgatorystudios.dungeonmastertools.DropboxActivity" />
+        </activity>
+        <activity android:name=".downloadCharacter"></activity>
     </application>
 
 </manifest>

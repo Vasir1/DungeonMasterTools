@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,12 +24,23 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
     private DropboxAPI<?> dropbox;
     private String path;
     private Context context;
+    private String file;
+    private String characterName;
 
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
                                String path) {
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
+    }
+    public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
+                               String path, String _file, String _name) {
+        this.context = context.getApplicationContext();
+        this.dropbox = dropbox;
+        this.path = path;
+        this.file= _file;
+        this.characterName=_name;
+        Log.w("test"," data I should be writing: "+_file);
     }
 
     @Override
@@ -39,12 +51,15 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
         try {
             tempFile = File.createTempFile("file", ".txt", tempDir);
             fr = new FileWriter(tempFile);
-            fr.write("Sample text file created for demo purpose. You may use some other file format for your app ");
+            fr.write(file);
+            //fr.write("Sample text file created for demo purpose. You may use some other file format for your app ");
             fr.close();
 
             FileInputStream fileInputStream = new FileInputStream(tempFile);
-            dropbox.putFile(path + "textfile.txt", fileInputStream,
-                    tempFile.length(), null, null);
+            dropbox.putFileOverwrite(path + characterName + ".xml", fileInputStream,
+                    tempFile.length(), null);
+            //dropbox.putFile(path + characterName+".xml", fileInputStream,
+           // tempFile.length(), null, null);
             tempFile.delete();
             return true;
         } catch (IOException e) {

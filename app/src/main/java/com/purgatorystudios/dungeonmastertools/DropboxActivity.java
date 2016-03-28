@@ -2,6 +2,7 @@ package com.purgatorystudios.dungeonmastertools;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
@@ -27,7 +28,7 @@ import com.dropbox.client2.session.TokenPair;
 
 public class DropboxActivity extends Activity implements OnClickListener {
     private DropboxAPI<AndroidAuthSession> dropbox;
-    private final static String FILE_DIR = "/DropboxSample/";
+    public final static String FILE_DIR = "/DropboxSample/";
     public String SECONDARY_DIR="";
     private final static String DROPBOX_NAME = "dropbox_prefs";
     private final static String ACCESS_KEY = "097abv0lh6d3wig";
@@ -41,7 +42,8 @@ public class DropboxActivity extends Activity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_dropboxactivity);
+        //setContentView(R.layout.content_dropboxactivity);
+        setContentView(R.layout.activity_dropbox);
 
         logIn = (Button) findViewById(R.id.dropbox_login);
         logIn.setOnClickListener(this);
@@ -69,14 +71,21 @@ public class DropboxActivity extends Activity implements OnClickListener {
         }
         dropbox = new DropboxAPI<AndroidAuthSession>(session);
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                Intent intent = new Intent(DropboxActivity.this,newCharacter.class);
+                //intent.putExtras("intent",DropboxActivity.this);
+                //intent.putExtras(this);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                      //  .setAction("Action", null).show();
             }
         });
 
@@ -265,9 +274,13 @@ public class DropboxActivity extends Activity implements OnClickListener {
                 else{
                     dir=FILE_DIR;
                 }
+                /*
                 downloadFile download = new downloadFile(this, dropbox,
                         dir, tag);
-                download.execute();
+                download.execute();*/
+                Intent intent = new Intent(DropboxActivity.this,viewCharacter.class);
+                intent.putExtra("name",tag);
+                startActivity(intent);
             }
         }
     }
