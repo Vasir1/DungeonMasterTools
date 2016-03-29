@@ -123,6 +123,7 @@ public class viewCharacter extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     public void prepareXML(){
         XmlSerializer xmlSerializer = Xml.newSerializer();
         StringWriter writer = new StringWriter();
@@ -172,7 +173,8 @@ public class viewCharacter extends AppCompatActivity {
         }
 
 
-    }
+    }*/
+
     public void initialize(String _name, String _alignment, String _city, String _faction, String _notes, String _rev){
         Log.w("test", "name: " + _name + " alignment: " + _alignment);
         name.setText(_name);

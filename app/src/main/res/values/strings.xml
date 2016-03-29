@@ -4,4 +4,11 @@
     <string name="title_activity_upload_file_to_dropbox">UploadFileToDropbox</string>
     <string name="title_activity_new_character">newCharacter</string>
     <string name="title_activity_view_character">viewCharacter</string>
+    <string name="dialog_message">Overwrite or make new file?</string>
+    <string name="dialog_title">File was changed elsewhere</string>
+    <string name="ok">OVERWRITE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="neutral">SAVE AS NEW</string>
+
+
 </resources>

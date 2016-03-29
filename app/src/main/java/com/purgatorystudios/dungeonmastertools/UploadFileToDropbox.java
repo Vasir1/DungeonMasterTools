@@ -27,6 +27,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
     private String file;
     private String characterName;
     public  String oldRev="";
+    public  boolean overwrite;
 
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
                                String path) {
@@ -35,12 +36,13 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
         this.path = path;
     }
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
-                               String path, String _file, String _name) {
+                               String path, String _file, String _name, boolean _overwrite) {
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
         this.file= _file;
         this.characterName=_name;
+        this.overwrite=_overwrite;
         Log.w("test"," data I should be writing: "+_file);
     }
 
@@ -58,8 +60,14 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
             fr.close();
 
             FileInputStream fileInputStream = new FileInputStream(tempFile);
-            dropbox.putFileOverwrite(path + characterName + ".xml", fileInputStream,
-                    tempFile.length(), null);
+            if (overwrite==true) {
+                dropbox.putFileOverwrite(path + characterName + ".xml", fileInputStream,
+                        tempFile.length(), null);
+            }
+            else{
+                dropbox.putFile(path + characterName + ".xml", fileInputStream,
+                        tempFile.length(), null, null);
+            }
             //dropbox.putFile(path + characterName+".xml", fileInputStream,
            // tempFile.length(), null, null);
 

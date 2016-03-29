@@ -74,12 +74,15 @@ public class compareRev extends AsyncTask<Void, Void, Boolean> {
     }
     protected void onPostExecute(Boolean result) {
         if (result) {
-            passed_newcharacter.prepareXML();
+            //It matches, so go ahead and overwrite
+            passed_newcharacter.prepareXML(true);
+
 
         }
         else{
-            Toast.makeText(context, "File changed since downloaded", Toast.LENGTH_LONG)
-                    .show();
+            passed_newcharacter.prompt();
+            //Toast.makeText(context, "File changed since downloaded", Toast.LENGTH_LONG)
+                  //  .show();
         }
 
     }

@@ -1,5 +1,7 @@
 package com.purgatorystudios.dungeonmastertools;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -70,6 +72,7 @@ public class newCharacter extends AppCompatActivity {
         notes = (EditText)findViewById(R.id.txtNotes);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
 
 
         /*
@@ -94,6 +97,7 @@ public class newCharacter extends AppCompatActivity {
             download.execute();
 
         }
+       // prompt();
 
     }
     public void initialize(String _name, String _alignment, String _city, String _faction, String _notes, String _rev){
@@ -131,14 +135,52 @@ public class newCharacter extends AppCompatActivity {
             }
             else {
 
-                prepareXML();
+                prepareXML(false); // by default it should not overwrite
             }
         }
 
         return super.onOptionsItemSelected(item);
     }
+    //https://www.google.com/design/spec/components/dialogs.html#
+    //http://www.tutorialspoint.com/android/android_alert_dialoges.htm
+    public  void prompt(){
+        Log.i("test","File was changed elsewhere!");
+        // 1. Instantiate an AlertDialog.Builder with its constructor
 
-    public void prepareXML(){
+        //getActivity()
+        //this.getApplicationContext()
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(R.string.dialog_message)
+                .setTitle(R.string.dialog_title);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                prepareXML(true);
+            }
+        });
+
+
+        builder.setNeutralButton(R.string.neutral, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                prepareXML(false);
+                // User saves as new the dialog
+            }
+        });
+
+// 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    public void prepareXML(boolean _overwrite){
         XmlSerializer xmlSerializer = Xml.newSerializer();
         StringWriter writer = new StringWriter();
         try {
@@ -174,7 +216,7 @@ public class newCharacter extends AppCompatActivity {
             xmlSerializer.endDocument();
 
             UploadFileToDropbox upload = new UploadFileToDropbox(this, dropbox,
-                    "/DropboxSample/", writer.toString(), name.getText().toString());
+                    "/DropboxSample/", writer.toString(), name.getText().toString(), _overwrite);
             upload.execute();
 
         }
