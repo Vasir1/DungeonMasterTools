@@ -48,6 +48,7 @@ public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
     private String characterName;
     Element name, alignment, city, faction, notes;
     viewCharacter passed_viewcharacter;
+    newCharacter passed_newcharacter;
     public String rev;
 
     public downloadCharacter(Context context,viewCharacter _viewCharacter, DropboxAPI<?> dropbox,
@@ -57,6 +58,16 @@ public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
         this.path = path;
         this.filemame=_filename;
         this.passed_viewcharacter=_viewCharacter;
+        Log.w("test","to download: "+path+" - "+_filename);
+    }
+
+    public downloadCharacter(Context context,newCharacter _newCharacter, DropboxAPI<?> dropbox,
+                             String path, String _filename) {
+        this.context = context.getApplicationContext();
+        this.dropbox = dropbox;
+        this.path = path;
+        this.filemame=_filename;
+        this.passed_newcharacter=_newCharacter;
         Log.w("test","to download: "+path+" - "+_filename);
     }
 
@@ -75,13 +86,21 @@ public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
             //File file = new File("/magnum-opus.txt");
             File file = File.createTempFile("file", ".txt", tempDir);
             FileOutputStream outputStream = new FileOutputStream(file);
-            DropboxAPI.DropboxFileInfo info = dropbox.getFile(path+filemame, null, outputStream, null);
+            DropboxAPI.DropboxFileInfo info = dropbox.getFile(path + filemame, null, outputStream, null);
             Log.i("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
             rev=info.getMetadata().rev;
 
             String received=read(file);
-            Log.w("test",received);
+            Log.w("test", received);
             readXML(file);
+            outputStream.close();
+            file.delete();
+            if (file.exists()){
+                Log.w("testE","Error: temporary file still exists!");
+            }
+            else{
+                Log.w("testE","Error: temporary file cleared!");
+            }
 
             /*
             tempFile = File.createTempFile("file", ".txt", tempDir);
@@ -93,6 +112,7 @@ public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
             dropbox.putFile(path + "textfile.txt", fileInputStream,
                     tempFile.length(), null, null);
             tempFile.delete();*/
+            file.delete();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,8 +152,12 @@ public class downloadCharacter extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
+            if (passed_viewcharacter!=null)
             passed_viewcharacter.initialize(name.getTextContent(),alignment.getTextContent(),city.getTextContent(),faction.getTextContent(),
                     notes.getTextContent(),rev);
+            else if (passed_newcharacter!=null)
+                passed_newcharacter.initialize(name.getTextContent(), alignment.getTextContent(), city.getTextContent(), faction.getTextContent(),
+                        notes.getTextContent(),rev);
             Toast.makeText(context, "File downloaded Sucesfully!",
                     Toast.LENGTH_LONG).show();
         } else {

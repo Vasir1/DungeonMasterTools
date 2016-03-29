@@ -1,5 +1,6 @@
 package com.purgatorystudios.dungeonmastertools;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -98,7 +99,7 @@ public class viewCharacter extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.view_character_menu, menu);
         return true;
     }
 
@@ -111,8 +112,12 @@ public class viewCharacter extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-        } else if (id == R.id.btnSave) {
-            prepareXML();
+        } else if (id == R.id.btnEdit) {
+           // prepareXML();
+            Intent intent = new Intent(viewCharacter.this,newCharacter.class);
+            intent.putExtra("isEditing", true);
+            intent.putExtra("fileName", getTitle().toString());
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -61,7 +61,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.purgatorystudios.dungeonmastertools.DropboxActivity" />
         </activity>
-        <activity android:name=".downloadCharacter"></activity>
+        <activity android:name=".downloadCharacter" />
+        <activity android:name=".compareRev"></activity>
     </application>
 
 </manifest>

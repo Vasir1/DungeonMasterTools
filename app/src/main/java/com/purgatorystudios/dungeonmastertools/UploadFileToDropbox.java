@@ -26,6 +26,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     private String file;
     private String characterName;
+    public  String oldRev="";
 
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
                                String path) {
@@ -42,6 +43,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
         this.characterName=_name;
         Log.w("test"," data I should be writing: "+_file);
     }
+
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -60,7 +62,15 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
                     tempFile.length(), null);
             //dropbox.putFile(path + characterName+".xml", fileInputStream,
            // tempFile.length(), null, null);
+
             tempFile.delete();
+            if (tempFile.exists()){
+                Log.w("testE","Error: temporary file still exists!");
+            }
+            else{
+                Log.w("testE","Error: temporary file cleared!");
+            }
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();

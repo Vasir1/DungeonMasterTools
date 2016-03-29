@@ -33,11 +33,12 @@ public class newCharacter extends AppCompatActivity {
     private final static String ACCESS_KEY = "097abv0lh6d3wig";
     private final static String ACCESS_SECRET = "jm8lcpz61ktmodd";
     private DropboxAPI<AndroidAuthSession> dropbox;
-
+    public final static String FILE_DIR = "/DropboxSample/";
+    public String rev;
 
 
     public void Authorize(){
-        Log.w("test","trying to authorize");
+        Log.w("test", "trying to authorize");
 
 
         AndroidAuthSession session;
@@ -70,6 +71,7 @@ public class newCharacter extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +84,26 @@ public class newCharacter extends AppCompatActivity {
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Authorize();
+        if (getIntent().getBooleanExtra("isEditing", false)){
+            Log.w("test", "I am editing");
+            String fileName=this.getIntent().getStringExtra("fileName");
+            setTitle(fileName);
+
+            downloadCharacter download = new downloadCharacter(this,newCharacter.this, dropbox,
+                    FILE_DIR, fileName);
+            download.execute();
+
+        }
+
+    }
+    public void initialize(String _name, String _alignment, String _city, String _faction, String _notes, String _rev){
+        Log.w("test", "name: " + _name + " alignment: " + _alignment);
+        name.setText(_name);
+        alignment.setText(_alignment);
+        city.setText(_city);
+        faction.setText(_faction);
+        notes.setText(_notes);
+        rev=_rev;
 
     }
     @Override
@@ -101,7 +123,16 @@ public class newCharacter extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
         } else if (id == R.id.btnSave) {
-            prepareXML();
+            if (getIntent().getBooleanExtra("isEditing", false)){
+
+                compareRev compare = new compareRev(this, newCharacter.this, dropbox,
+                        "/DropboxSample/", getTitle().toString(), rev);
+                compare.execute();
+            }
+            else {
+
+                prepareXML();
+            }
         }
 
         return super.onOptionsItemSelected(item);
