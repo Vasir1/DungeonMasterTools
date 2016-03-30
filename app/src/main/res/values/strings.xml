@@ -9,6 +9,7 @@
     <string name="ok">OVERWRITE</string>
     <string name="cancel">CANCEL</string>
     <string name="neutral">SAVE AS NEW</string>
-
+    <string name="delete">DELETE</string>
+    <string name="context_menu_text">DELETE?</string>
 
 </resources>

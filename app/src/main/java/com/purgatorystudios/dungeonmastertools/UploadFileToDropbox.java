@@ -37,6 +37,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
     }
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
                                String path, String _file, String _name, boolean _overwrite) {
+        //_name is ulpload name and includes (or should include) the extension.
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
@@ -44,6 +45,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
         this.characterName=_name;
         this.overwrite=_overwrite;
         Log.w("test"," data I should be writing: "+_file);
+        Log.i("test","file name?: "+_file);
     }
 
 
@@ -61,11 +63,11 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
 
             FileInputStream fileInputStream = new FileInputStream(tempFile);
             if (overwrite==true) {
-                dropbox.putFileOverwrite(path + characterName + ".xml", fileInputStream,
+                dropbox.putFileOverwrite(path + characterName, fileInputStream,
                         tempFile.length(), null);
             }
             else{
-                dropbox.putFile(path + characterName + ".xml", fileInputStream,
+                dropbox.putFile(path + characterName, fileInputStream,
                         tempFile.length(), null, null);
             }
             //dropbox.putFile(path + characterName+".xml", fileInputStream,

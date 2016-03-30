@@ -35,7 +35,7 @@ public class viewCharacter extends AppCompatActivity {
     private final static String ACCESS_KEY = "097abv0lh6d3wig";
     private final static String ACCESS_SECRET = "jm8lcpz61ktmodd";
     private DropboxAPI<AndroidAuthSession> dropbox;
-    public final static String FILE_DIR = "/DropboxSample/";
+    public static String FILE_DIR = "/DropboxSample/";
 
 
 
@@ -84,8 +84,8 @@ public class viewCharacter extends AppCompatActivity {
         });
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        FILE_DIR=getIntent().getStringExtra("dir");
         Authorize();
-
 
 
         String tempName=this.getIntent().getStringExtra("name");
@@ -117,6 +117,7 @@ public class viewCharacter extends AppCompatActivity {
             Intent intent = new Intent(viewCharacter.this,newCharacter.class);
             intent.putExtra("isEditing", true);
             intent.putExtra("fileName", getTitle().toString());
+            intent.putExtra("dir",FILE_DIR);
             startActivity(intent);
         }
 
@@ -182,6 +183,14 @@ public class viewCharacter extends AppCompatActivity {
         city.setText(_city);
         faction.setText(_faction);
         notes.setText(_notes);
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        downloadCharacter download = new downloadCharacter(this,viewCharacter.this, dropbox,
+                FILE_DIR, getTitle().toString());
+        download.execute();
 
     }
 

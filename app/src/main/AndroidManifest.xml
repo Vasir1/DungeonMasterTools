@@ -62,7 +62,9 @@
                 android:value="com.purgatorystudios.dungeonmastertools.DropboxActivity" />
         </activity>
         <activity android:name=".downloadCharacter" />
-        <activity android:name=".compareRev"></activity>
+        <activity android:name=".compareRev" />
+        <activity android:name=".deleteFromDropbox" />
+        <activity android:name=".contextMenu"></activity>
     </application>
 
 </manifest>

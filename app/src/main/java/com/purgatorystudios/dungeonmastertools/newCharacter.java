@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Xml;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +36,9 @@ public class newCharacter extends AppCompatActivity {
     private final static String ACCESS_KEY = "097abv0lh6d3wig";
     private final static String ACCESS_SECRET = "jm8lcpz61ktmodd";
     private DropboxAPI<AndroidAuthSession> dropbox;
-    public final static String FILE_DIR = "/DropboxSample/";
+    public static String FILE_DIR = "/DropboxSample/";
     public String rev;
+    public String fileName="";
 
 
     public void Authorize(){
@@ -86,10 +88,13 @@ public class newCharacter extends AppCompatActivity {
         });
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        FILE_DIR=getIntent().getStringExtra("dir");
+
         Authorize();
+
         if (getIntent().getBooleanExtra("isEditing", false)){
             Log.w("test", "I am editing");
-            String fileName=this.getIntent().getStringExtra("fileName");
+            fileName=this.getIntent().getStringExtra("fileName");
             setTitle(fileName);
 
             downloadCharacter download = new downloadCharacter(this,newCharacter.this, dropbox,
@@ -130,7 +135,7 @@ public class newCharacter extends AppCompatActivity {
             if (getIntent().getBooleanExtra("isEditing", false)){
 
                 compareRev compare = new compareRev(this, newCharacter.this, dropbox,
-                        "/DropboxSample/", getTitle().toString(), rev);
+                        FILE_DIR, getTitle().toString(), rev);
                 compare.execute();
             }
             else {
@@ -150,6 +155,8 @@ public class newCharacter extends AppCompatActivity {
         //getActivity()
         //this.getApplicationContext()
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+       // LayoutInflater inflater = this.getLayoutInflater();
+        //builder.setView(inflater.inflate(R.layout.context_menu, null));
 
 // 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage(R.string.dialog_message)
@@ -215,8 +222,17 @@ public class newCharacter extends AppCompatActivity {
             xmlSerializer.endTag("", "character");
             xmlSerializer.endDocument();
 
+            ///DropboxSample/"
+            String uploadName;
+            if (fileName.equals("")){
+                uploadName=name.getText().toString()+".xml";
+            }
+            else{
+                uploadName=fileName;
+            }
             UploadFileToDropbox upload = new UploadFileToDropbox(this, dropbox,
-                    "/DropboxSample/", writer.toString(), name.getText().toString(), _overwrite);
+                    FILE_DIR, writer.toString(), uploadName, _overwrite);
+
             upload.execute();
 
         }
